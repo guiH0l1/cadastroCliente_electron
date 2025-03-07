@@ -1,0 +1,16 @@
+{
+  "name": "atividade_electron",
+  "version": "1.0.0",
+  "description": "atividade para desenvolver o cadastro de clientes usando o sistema electron",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^35.0.0"
+  }
+}
