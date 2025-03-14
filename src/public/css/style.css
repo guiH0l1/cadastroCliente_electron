@@ -1,0 +1,45 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    background-color: #c8c8c8;
+    min-height: 100vh; /* Faz a seção ocupar 100% da altura da tela */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centraliza verticalmente */
+    align-items: center; /* Centraliza horizontalmente */
+    padding: 20px;
+}
+
+/** Rodapé **/
+footer {
+    background-color: #174feb;
+    display: flex;
+    justify-content: space-between;
+    display: fixed;
+    padding: 5px;
+    height: 30px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    color: #fff;
+}
+
+.botao-container {
+    display: flex;
+    justify-content: flex-start; /* Alinha os botões à esquerda */
+    gap: 10px; /* Adiciona um pequeno espaço entre os botões */
+    margin-right: 80%;
+}
+
+.rodape{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+.form-label{
+    font-weight: bold;
+}
