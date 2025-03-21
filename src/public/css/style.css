@@ -43,3 +43,9 @@ footer {
 .form-label{
     font-weight: bold;
 }
+
+/* Sobre */
+#sobre h3 {
+    color: var(--cinza);
+    font-weight: 500;
+}

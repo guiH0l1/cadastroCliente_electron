@@ -7,7 +7,7 @@
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline'">
     <link rel="stylesheet" href="../public/css/bootstrap.min.css">
     <!--Título da janela-->
-    <title>Sticky Notes</title>
+    <title>Cadastro de clientes</title>
     <link rel="stylesheet" href="../public/css/style.css">
 </head>
 <body>
@@ -24,11 +24,11 @@
 
 
         <form id="cadastro" class="row g-3" onsubmit="return validarFormulario(event)">
-            <div class="col-md-6">
+            <div class="col-md-5">
                 <label for="nome" class="form-label">Nome:</label>
                 <input type="text" id="nome" class="form-control" required>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <label for="sexo" class="form-label">Sexo:</label>
                 <select id="sexo" class="form-select" required>
                     <option value="">Selecione</option>
@@ -121,7 +121,7 @@
     </section>
     <footer>
         <p id="dataAtual"></p>
-        <img src="../public/img/dboff.png" alt="ícone banco de dados">
+        <img src="../public/img/dboff.png" alt="ícone banco de dados" id="iconeDB">
     </footer>
 </body>
 <script src="script.js"></script>
