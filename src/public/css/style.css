@@ -2,6 +2,7 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
+    
 }
 
 .container {
@@ -35,6 +36,12 @@ footer {
     margin-right: 80%;
 }
 
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 .rodape{
     display: flex;
     flex-direction: row;
@@ -44,8 +51,12 @@ footer {
     font-weight: bold;
 }
 
-/* Sobre */
-#sobre h3 {
-    color: var(--cinza);
-    font-weight: 500;
+#ok{
+   padding: 10px 16px;
+   font-size: 14px;
+   color: white;
+   background-color: #174feb;
+   border: none;
+   border-radius: 5px;
+   cursor: pointer;
 }

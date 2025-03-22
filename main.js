@@ -41,11 +41,11 @@ function aboutWindow() {
   nativeTheme.themeSource = 'light'
   // obter a janela principal
   const mainWindow = BrowserWindow.getFocusedWindow()
-  // validação (se existir a janela principal)
-  if (mainWindow) {
+   // validação (se existir a janela principal)
+   if (mainWindow) {
     about = new BrowserWindow({
-      width: 280,
-      height: 250,
+      width: 300,
+      height: 300,
       autoHideMenuBar: true,
       resizable: false,
       minimizable: false,
