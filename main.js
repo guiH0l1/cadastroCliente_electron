@@ -1,180 +1,191 @@
-console.log("Processo Principal")
+const { app, BrowserWindow, nativeTheme, Menu, shell, ipcMain, dialog } = require('electron/main')
 
-// importação dos recursos do frame work
-const { app, BrowserWindow, nativeTheme, Menu, shell, ipcMain } = require('electron/main')
-
-// Ativação do preload.js (importação do path)
 const path = require('node:path')
 
-// Importação dos metodos conectar e desconectar (módulo de conexão)
 const { conectar, desconectar } = require('./database.js')
 
-// janela principal
+const clienteModel = require('./src/models/Clientes.js')
+
 let win
 const createWindow = () => {
-    // definindo o tema da janela claro ou escuro
-    nativeTheme.themeSource = 'light'
-    win = new BrowserWindow({
-        width: 1080,
-        height: 900,
-        //frame: false,
-        //resizable: false,
-        //minimizable: false,
-        //closable: false,
-        //autoHideMenuBar: true,
-        webPreferences: {
-            preload: path.join(__dirname, 'preload.js')
-        }
-    })
+  nativeTheme.themeSource = 'light'
+  win = new BrowserWindow({
+    width: 1080,
+    height: 900,
 
-    // Carregar o menu personalização
-    // Antes importar o recurso menu
-    Menu.setApplicationMenu(Menu.buildFromTemplate(template))
+    webPreferences: {
+      preload: path.join(__dirname, './preload.js')
+    }
+  })
 
-    // carregar o documento html
-    win.loadFile('./src/views/index.html')
+  Menu.setApplicationMenu(Menu.buildFromTemplate(templete))
+
+  win.loadFile('./src/views/index.html')
 }
 
-// Janela sobre
 let about
 function aboutWindow() {
   nativeTheme.themeSource = 'light'
-  // obter a janela principal
+
   const mainWindow = BrowserWindow.getFocusedWindow()
-   // validação (se existir a janela principal)
-   if (mainWindow) {
+
+  if (mainWindow) {
     about = new BrowserWindow({
-      width: 300,
-      height: 300,
+      width: 415,
+      height: 350,
       autoHideMenuBar: true,
       resizable: false,
       minimizable: false,
-      //estabelecer uma relação hierarquica entre janelas
       parent: mainWindow,
-      // criar uma janela modal (só retorna a principal quando encerrada)
       modal: true,
       webPreferences: {
-        preload: path.join(__dirname, 'preload.js')
+        preload: path.join(__dirname, './preload.js')
       }
     })
   }
 
   about.loadFile('./src/views/sobre.html')
 
-  //recebimento da mensagem de renderização da tela sobre sobre para fechar a janela usando o botão 'OK'
   ipcMain.on('about-exit', () => {
-    //validação (se existir a janela e ela não estiver destruida, fechada)
     if (about && !about.isDestroyed()) {
-      about.close() //fechar a janela
+      about.close()
     }
+   
   })
 }
 
-// inicialização da aplicação (assincronismo)
 app.whenReady().then(() => {
-    createWindow()
+  createWindow()
 
-    // melhor localç para estabelecer a conexão com o banco de dados
-    // No MongoDB e mais eficiente manter uma unica conexão aberta durante todo o tempo de vida do aplicativo
-    // ipcmain.on (receber mensagem)
-    // db-connect (rotulo da mensagem)
-    ipcMain.on('db-connect', async(event) => {
-        // a linha a baixo estabelecer a conexão com o banco de dados
-        await conectar()
-        // enviar a o renderizador uma mensagem para trocar a imagem do icone do status do banco de dados
-        setTimeout(() => {
-            // enviar ao renderizador a mensagem "Conectado"
-            // db-status (ipc - comunicação entre processos - proload.js)
-            event.reply('db-status', "conectado")
-        }, 500) //500ms = 0.5s
-    })
+  ipcMain.on('db-connect', async (event) => {
+    const conectado = await conectar()
+    if (conectado) {
+      setTimeout(() => {
+        event.reply('db-status', "conectado")
+      }, 500)
+    }
+  })
 
-    // so ativar a janela principal se nenhuma outra estiver ativa
-    app.on('activate', () => {
-        if (BrowserWindow.getAllWindows().length === 0) {
-            createWindow()
-        }
-    })
+  app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createWindow()
+    }
+  })
 })
 
-
-// se o sistema não for mac encerrar a aplicação quando a janela for fechada
 app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
-        app.quit()
-    }
+  if (process.platform !== 'darwin') {
+    app.quit()
+  }
 })
 
-// IMPORTANTE encerrar a conexão com o banco de dados quando a aplicação for encerrada
-app.on('before-quit', async() => {
-    await desconectar()
+app.on('before-quit', async () => {
+  await desconectar()
 })
 
-// Reduzir o verbozidade de tops não criticos (devtools)
 app.commandLine.appendSwitch('log-level', '3')
-
-// template do menu
-const template = [
-    {
-        label: 'Cadastro',
-        submenu: [
-            {
-                label: 'Sair',
-                accelerator: 'Alt+F4',
-                click: () => app.quit()
-            },
-            {
-                type: 'separator'
-            },
-        ]
-    },
-    {
-        label: 'Relatório',
-        submenu:[
-            {
-                label: 'Clientes'
-            }
-        ]
-    },
-    {
-        label: 'Ferramentas',
-        submenu: [
-            {
-                label: 'Aplicar zoom',
-                role: 'zoomIn',
-            },
-            {
-                label: 'Reduzir',
-                role: 'zoomOut',
-            },
-            {
-                label: 'Restaurar Zoom padrão',
-                role: 'resetZoom',
-            },
-            {
-                type: 'separator'
-            },
-            {
-                label: 'Recarregar',
-                role: 'reload'
-            },
-            {
-                label: 'DevTools',
-                role: 'toggleDevTools',
-            }
-        ]
-    },
-    {
-        label: 'Ajuda',
-        submenu: [
-            {
-                label: 'Repositorio',
-                click: () => shell.openExternal('https://github.com/guiH0l1/cadastroCliente_electron')
-            },
-            {
-                label: 'Sobre',
-                click: () => aboutWindow()
-            }
-        ]
-    }
+ 
+const templete = [
+  {
+    label: 'Cadastro',
+    submenu: [
+      {
+        label: 'Sair',
+        accelerator: 'Esc'
+      }
+    ]
+  },
+  {
+    label: 'Relatório',
+    submenu: [
+      {
+        label: 'Clientes',
+        accelerator: 'Alt+C'
+      }
+    ]
+  },
+  {
+    label: 'Ferramentas',
+    submenu: [
+      {
+        label: 'Ampliar',
+        role: 'zoomIn',
+        accelerator: 'Ctrl+='
+      },
+      {
+        label: 'Reduzir',
+        role: 'zoomOut',
+        accelerator: 'Ctrl+-'
+      },
+      {
+        label: 'Tamanho padrão',
+        role: 'resetZoom',
+        accelerator: 'Ctrl+0'
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label: 'Recarregar',
+        role: 'reload'
+      },
+      {
+        label: 'DevTools',
+        role: 'toggleDevTools',
+        accelerator: 'Ctrl+Shift'
+      }
+    ]
+  },
+  {
+    label: 'Ajuda',
+    submenu: [
+      {
+        label: 'Repositório',
+        click: () => shell.openExternal('')
+      },
+      {
+        label: 'Sobre',
+        click: () => aboutWindow()
+      }
+    ]
+  }
 ]
+
+//= CRUD CREATE ==================================================
+
+ipcMain.on('create-cliente', async (event, newCliente) => {
+  console.log(newCliente)
+
+  try {
+    const newClientes = clienteModel({
+      nome: newCliente.nomeCli,
+      sexo: newCliente.sexoCli,
+      cpf: newCliente.cpfCli,
+      email: newCliente.emailCli,
+      telelefone: newCliente.telCli,
+      cep: newCliente.cepCli,
+      logradouro: newCliente.logradouroCli,
+      numero: newCliente.numeroCli,
+      complemento: newCliente.complementoCli,
+      bairro: newCliente.bairroCli,
+      cidade: newCliente.cidadeCli,
+      uf: newCliente.ufCli,
+    })
+
+    await newClientes.save()
+
+    dialog.showMessageBox({
+      type: 'info',
+      title: "Aviso",
+      message: "Cliente adicionado com sucesso.",
+      buttons: ['OK']
+    }).then((result) => {
+      if (result.response === 0) {
+        event.reply('reset-form')
+      }
+    })
+
+  } catch (error) {
+    console.log(error)
+  }
+})
