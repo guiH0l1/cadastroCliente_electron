@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const url = 'mongodb+srv://admin:123Senac@cluster0.07vyv.mongodb.net/dbclientes'
+const url = 'mongodb+srv://admin:123Senac@cluster0.s4sxi.mongodb.net/dbclientes'
 
 let conectado = false
 

@@ -8,95 +8,97 @@ function buscarEndereco() {
             document.getElementById('inputLogradouro').value = dados.logradouro
             document.getElementById('inputBairro').value = dados.bairro
             document.getElementById('inputCidade').value = dados.localidade
-            document.getElementById('inputUf').value = dados.uf;
+            document.getElementById('inputUf').value = dados.uf
         })
 }
 
 function limparFormulario() {
-    document.getElementById("formCliente").reset();
-    document.getElementById("cpfErro").style.display = "none";
-    document.getElementById("mensagemSucesso").style.display = "none";
+    document.getElementById("formCliente").reset()
+    document.getElementById("cpfErro").style.display = "none"
+    document.getElementById("mensagemSucesso").style.display = "none"
 }
 
 // Validação de CPF
 function validarCPF() {
-    let cpfInput = document.getElementById('inputCpf');
-    let cpfErro = document.getElementById('cpfErro');
-    let cpf = cpfInput.value.replace(/\D/g, ''); // Remove caracteres não numéricos
+    let cpfInput = document.getElementById('inputCpf')
+    let cpfErro = document.getElementById('cpfErro')
+    let cpf = cpfInput.value.replace(/\D/g, '') 
+
 
     // Resetando mensagens e estilos
-    cpfErro.style.display = "none"; // Oculta erro antes da validação
-    cpfInput.style.border = "";
+    cpfErro.style.display = "none" 
+    cpfInput.style.border = ""
 
     if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) {
-        cpfErro.textContent = "CPF inválido! Insira um CPF válido.";
-        cpfErro.style.display = "block";
-        cpfInput.style.border = "2px solid red";
-        return false;
+        cpfErro.textContent = "CPF inválido! Insira um CPF válido."
+        cpfErro.style.display = "block"
+        cpfInput.style.border = "2px solid red"
+        return false
     }
 
-    let soma = 0, resto;
-    for (let i = 1; i <= 9; i++) soma += parseInt(cpf[i - 1]) * (11 - i);
-    resto = (soma * 10) % 11;
-    if (resto === 10 || resto === 11) resto = 0;
+    let soma = 0, resto
+    for (let i = 1; i <= 9; i++) soma += parseInt(cpf[i - 1]) * (11 - i)
+    resto = (soma * 10) % 11
+    if (resto === 10 || resto === 11) resto = 0
     if (resto !== parseInt(cpf[9])) {
-        cpfErro.textContent = "CPF inválido!";
-        cpfErro.style.display = "block";
-        cpfInput.style.border = "2px solid red";
-        return false;
+        cpfErro.textContent = "CPF inválido!"
+        cpfErro.style.display = "block"
+        cpfInput.style.border = "2px solid red"
+        return false
     }
 
-    soma = 0;
-    for (let i = 1; i <= 10; i++) soma += parseInt(cpf[i - 1]) * (12 - i);
-    resto = (soma * 10) % 11;
-    if (resto === 10 || resto === 11) resto = 0;
+    soma = 0
+    for (let i = 1; i <= 10; i++) soma += parseInt(cpf[i - 1]) * (12 - i)
+    resto = (soma * 10) % 11
+    if (resto === 10 || resto === 11) resto = 0
     if (resto !== parseInt(cpf[10])) {
-        cpfErro.textContent = "CPF inválido!";
-        cpfErro.style.display = "block";
-        cpfInput.style.border = "2px solid red";
-        return false;
+        cpfErro.textContent = "CPF inválido!"
+        cpfErro.style.display = "block"
+        cpfInput.style.border = "2px solid red"
+        return false
     }
 
     // CPF válido
-    cpfErro.style.display = "none";
-    //cpfInput.style.border = "2px solid green";
-    return true;
+    cpfErro.style.display = "none"
+    //cpfInput.style.border = "2px solid green"
+    return true
 }
 
 // Validação de e-mail
 function validarEmail() {
-    let email = document.getElementById('inputEmail').value;
-    let regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    let emailInput = document.getElementById('inputEmail');
+    let email = document.getElementById('inputEmail').value
+    let regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    let emailInput = document.getElementById('inputEmail')
 
     if (!regexEmail.test(email)) {
-        alert('E-mail inválido! Insira um e-mail válido.');
-        emailInput.focus();
-        return false;
+        alert('E-mail inválido! Insira um e-mail válido.')
+        emailInput.focus()
+        return false
     }
-    return true;
+    return true
+
 }
 
 // Validar Formulario
 function validarFormulario(event) {
-    event.preventDefault();
-    let form = document.getElementById("formCliente");
-    let inputs = form.querySelectorAll("input[required]");
-    let valido = true;
+    event.preventDefault()
+    let form = document.getElementById("formCliente")
+    let inputs = form.querySelectorAll("input[required]")
+    let valido = true
 
     inputs.forEach(input => {
         if (!input.value.trim()) {
-            valido = false;
+            valido = false
         }
-    });
+    })
 
     if (!validarCPF()) {
-        valido = false;
+        valido = false
     }
 
     if (valido) {
-        document.getElementById("mensagemSucesso").style.display = "block";
-        form.reset();
+        document.getElementById("mensagemSucesso").style.display = "block"
+        form.reset()
     }
 }
 //===========================================================================
@@ -188,3 +190,13 @@ api.resetForm((args) => {
     resetForm()
 })
 //= FIM RESET FORM =================================================
+// Reset CPF =======================================================
+function resetCpf() {
+    const erroCpf = document.getElementById('inputCpf')
+    erroCpf.style.border = "2px solid red";
+    erroCpf.value = ""
+    erroCpf.focus()
+}
+api.resetCpf((args) => {
+    resetCpf()
+})
