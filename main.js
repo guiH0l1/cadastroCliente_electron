@@ -280,12 +280,12 @@ async function relatorioClientes() {
     // ===============================================
     // Numeração automatica de página
     //================================================
-    
+
     const pages = doc.internal.getNumberOfPages()
-    for(let i = 1; i <= pages; i++){
+    for (let i = 1; i <= pages; i++) {
       doc.setPage(i)
       doc.setFontSize(10)
-      doc.text(`Página ${i} de ${pages}`, 105, 290, {align: 'center'})
+      doc.text(`Página ${i} de ${pages}`, 105, 290, { align: 'center' })
     }
 
     // ===============================================
@@ -306,3 +306,31 @@ async function relatorioClientes() {
 }
 
 // == Fim - relatorio de clientes ===============
+// ==============================================
+
+
+// ==============================================================================================
+// == CRUD Read =================================================================================
+
+ipcMain.on('search-name', async (event, cliName) => {
+  //teste de recebimento do nome do cliente (passo2)
+  console.log(cliName)
+  try {
+    // Passos 3 e 4 (Busca dos dados do cliente pelo nome) 
+    // RegEXP (expressãoi regular 'i' -> insentive (ignorar letra maiúsculas ou minúsculas))
+    const client = await clienteModel.find({
+      nome: new RegExp(cliName, 'i')
+    })
+    //teste da busca do cliente pelo nome (Passos 3 e 4)
+    console.log(client)
+    // Enviar ao renderizador (rendererCliente) os dados do cliente (passo 5) OBS: Não esquecer de converter para string "JSON"
+    event.reply('render-client', JSON.stringify(client))
+  } catch (error) {
+    console.log(error)
+  }
+})
+
+
+// == Fim CRUD Read =============================================================================
+// ==============================================================================================
+

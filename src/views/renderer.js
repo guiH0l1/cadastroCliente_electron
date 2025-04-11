@@ -18,15 +18,21 @@ function limparFormulario() {
     document.getElementById("mensagemSucesso").style.display = "none"
 }
 
+// processo de cadastro do cliente //
+const foco = document.getElementById('searchCliente')
+
+//criar um valor global para extrair os dados do cliente
+let arrayClient = []
+
 // Validação de CPF
 function validarCPF() {
     let cpfInput = document.getElementById('inputCpf')
     let cpfErro = document.getElementById('cpfErro')
-    let cpf = cpfInput.value.replace(/\D/g, '') 
+    let cpf = cpfInput.value.replace(/\D/g, '')
 
 
     // Resetando mensagens e estilos
-    cpfErro.style.display = "none" 
+    cpfErro.style.display = "none"
     cpfInput.style.border = ""
 
     if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) {
@@ -63,6 +69,34 @@ function validarCPF() {
     //cpfInput.style.border = "2px solid green"
     return true
 }
+
+
+//==================================================================
+//= RESET FORM =====================================================
+function resetForm() {
+    location.reload()
+}
+api.resetForm((args) => {
+    resetForm()
+})
+//= FIM RESET FORM =================================================
+// Reset CPF =======================================================
+
+function resetCpf() {
+    if (cpf === cpf) {
+        cpfErro.textContent = "CPF já cadastrado"
+        const erroCpf = document.getElementById('inputCpf')
+        cpfErro.style.display = "block"
+        erroCpf.style.border = "2px solid red";
+        erroCpf.value = ""
+        erroCpf.focus()
+
+    }
+
+}
+api.resetCpf((args) => {
+    resetCpf()
+})
 
 // Validação de e-mail
 function validarEmail() {
@@ -124,8 +158,6 @@ api.dbStatus((event, message) => {
     }
 })
 //=============================================================================
-// processo de cadastro do cliente //
-const foco = document.getElementById('searchCliente')
 
 document.addEventListener('DOMContentLoaded', () => {
     btnUpdate.disabled = true
@@ -152,7 +184,7 @@ formCli.addEventListener('submit', async (event) => {
     // evitar comportamento padrão de recarregar a página
     event.preventDefault()
     console.log(
-        nome.value, 
+        nome.value,
         sexo.value,
         cpf.value,
         email.value,
@@ -172,7 +204,7 @@ formCli.addEventListener('submit', async (event) => {
         emailCli: email.value,
         telCli: tel.value,
         cepCli: cep.value,
-        logradouroCli: logradouro.value, 
+        logradouroCli: logradouro.value,
         numeroCli: numero.value,
         complementoCli: complemento.value,
         bairroCli: bairro.value,
@@ -181,22 +213,43 @@ formCli.addEventListener('submit', async (event) => {
     }
     api.createCliente(newCliente)
 })
-//==================================================================
-//= RESET FORM =====================================================
-function resetForm() {
-    location.reload()
+
+
+// =================================================================
+// == CRUD Rad =====================================================
+
+function searchName() {
+    //console.log("Teste do buscar feito")
+    //capturar o nome a ser pesquisado (passo 1)
+    let cliName = document.getElementById('searchCliente').value
+    console.log(cliName) // teste do passo 1
+    // enviar onome do cliente ao main(passo 2)
+    api.searchName(cliName)
+    // receber os dados do cliente(passo 5)
+    api.renderClient((event, client)=> {
+        // teste de recebimento dos dados do cliente
+        console.log(client)
+        // passo 6 renderização dos dados do cliente (preencher os inputs do form) Não esquecer os dados de string para JSON 
+        const clientData = JSON.parse(client)
+        arrayClient = clientData
+        // uso do forEach para percorrer o vetor e extrair os dados
+        arrayClient.forEach((c) => {
+            nome.value = c.nome
+            sexo.value = c.sexo
+            cpf.value = c.cpf
+            email.value = c.email
+            tel.value = c.telefone
+            cep.value = c.cep
+            logradouro.value = c.logradouro
+            numero.value = c.numero
+            complemento.value = c.complemento
+            bairro.value = c.bairro
+            cidade.value = c.cidade
+            uf.value = c.uf
+        })
+    })
+
 }
-api.resetForm((args) => {
-    resetForm()
-})
-//= FIM RESET FORM =================================================
-// Reset CPF =======================================================
-function resetCpf() {
-    const erroCpf = document.getElementById('inputCpf')
-    erroCpf.style.border = "2px solid red";
-    erroCpf.value = ""
-    erroCpf.focus()
-}
-api.resetCpf((args) => {
-    resetCpf()
-})
+
+// == Fim CRUD Read ===================================================
+// =================================================================
