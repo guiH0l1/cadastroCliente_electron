@@ -7,7 +7,7 @@ const path = require('node:path')
 
 const { conectar, desconectar } = require('./database.js')
 
-const clienteModel = require('./src/models/Clientes.js')
+const clienteModel = require('./src/models/clientes.js')
 
 // importação da biblioteca nativa do javaScript para manipular arquivos
 const fs = require('fs')
@@ -312,6 +312,15 @@ async function relatorioClientes() {
 // ==============================================================================================
 // == CRUD Read =================================================================================
 
+ipcMain.on('validate-search', () => {
+  dialog.showMessageBox({
+    type: 'warning',
+    title: 'Atenção',
+    message: 'Preencha o campo de busca',
+    buttons: ['OK']
+  })
+})
+
 ipcMain.on('search-name', async (event, cliName) => {
   //teste de recebimento do nome do cliente (passo2)
   console.log(cliName)
@@ -323,8 +332,30 @@ ipcMain.on('search-name', async (event, cliName) => {
     })
     //teste da busca do cliente pelo nome (Passos 3 e 4)
     console.log(client)
-    // Enviar ao renderizador (rendererCliente) os dados do cliente (passo 5) OBS: Não esquecer de converter para string "JSON"
-    event.reply('render-client', JSON.stringify(client))
+    // melhoria da experiencia do usuario (se não existir um cliente cadastrado enviar uma mensagem ao usuario questionando se ele deseja cadastrar este novo cleinte)
+    // se o valor estiver vazio (length retoma retorna o tamanho o vetor)
+    if (client.length === 0) {
+      // Qquestionar o usuario...
+      dialog.showMessageBox({
+        type: 'warning',
+        title: 'Aviso',
+        message: 'Cliente não cadastrado. \nDeseja cadastrá-lo?',
+        defaultId: 0,
+        buttons: ['Sim', 'Não'] //[0, 1] deafultId: 0 = Sim
+      }).then((result) => {
+        // se o botão sim for pressionado
+        if (result.response === 0) {
+          // enviar o pedido para rendererCliente um pedido para recortar e copiar o nome do cliente do campo de busca para o campo nome (evitar que o usuario digite o nome novamente)
+          event.reply('set-name')
+        } else {
+          // enviar ao rendererCliente um pedido para limpar os campos (reutilizar a api do preload 'reset-form')
+          event.reply('reset-form')
+        }
+      })
+    } else {
+      // Enviar ao renderizador (rendererCliente) os dados do cliente (passo 5) OBS: Não esquecer de converter para string "JSON"
+      event.reply('render-client', JSON.stringify(client))
+    }
   } catch (error) {
     console.log(error)
   }

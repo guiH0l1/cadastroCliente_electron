@@ -218,37 +218,57 @@ formCli.addEventListener('submit', async (event) => {
 // =================================================================
 // == CRUD Rad =====================================================
 
+// setar o nome do cliente para fazer um novo cadastro se a busca retornar que o cliente não está cadastrado.
+api.setName((args) => {
+    console.log("teste do IPC 'set-name'")
+    // "recortar" o nome na busca e setar no campo nome do form
+    let busca = document.getElementById('searchCliente').value
+    // foco no campo de busca
+    nome.focus()
+    // limpar o campo de busca
+    foco.value =""
+    // copiar o nome do cliente para o campo nome
+    nome.value = busca
+}) 
+
 function searchName() {
     //console.log("Teste do buscar feito")
     //capturar o nome a ser pesquisado (passo 1)
     let cliName = document.getElementById('searchCliente').value
     console.log(cliName) // teste do passo 1
-    // enviar onome do cliente ao main(passo 2)
-    api.searchName(cliName)
-    // receber os dados do cliente(passo 5)
-    api.renderClient((event, client)=> {
-        // teste de recebimento dos dados do cliente
-        console.log(client)
-        // passo 6 renderização dos dados do cliente (preencher os inputs do form) Não esquecer os dados de string para JSON 
-        const clientData = JSON.parse(client)
-        arrayClient = clientData
-        // uso do forEach para percorrer o vetor e extrair os dados
-        arrayClient.forEach((c) => {
-            nome.value = c.nome
-            sexo.value = c.sexo
-            cpf.value = c.cpf
-            email.value = c.email
-            tel.value = c.telefone
-            cep.value = c.cep
-            logradouro.value = c.logradouro
-            numero.value = c.numero
-            complemento.value = c.complemento
-            bairro.value = c.bairro
-            cidade.value = c.cidade
-            uf.value = c.uf
+    // validação de campo obrigatorio
+    // se o campo de busca não for preenchido
+    if (cliName === "") {
+        // enviar ao main um pedido para alerta o usuario
+        // precisa usar o preload.js
+        api.validateSearch()
+    } else {
+        // enviar onome do cliente ao main(passo 2)
+        api.searchName(cliName)
+        // receber os dados do cliente(passo 5)
+        api.renderClient((event, client) => {
+            // teste de recebimento dos dados do cliente
+            console.log(client)
+            // passo 6 renderização dos dados do cliente (preencher os inputs do form) Não esquecer os dados de string para JSON 
+            const clientData = JSON.parse(client)
+            arrayClient = clientData
+            // uso do forEach para percorrer o vetor e extrair os dados
+            arrayClient.forEach((c) => {
+                nome.value = c.nome
+                sexo.value = c.sexo
+                cpf.value = c.cpf
+                email.value = c.email
+                tel.value = c.telefone
+                cep.value = c.cep
+                logradouro.value = c.logradouro
+                numero.value = c.numero
+                complemento.value = c.complemento
+                bairro.value = c.bairro
+                cidade.value = c.cidade
+                uf.value = c.uf
+            })
         })
-    })
-
+    }
 }
 
 // == Fim CRUD Read ===================================================
