@@ -14,17 +14,16 @@
 
 <body>
     <section class="container" id="inputForm">
-        <h1 class="text-center mb-4">CADASTRO DE CLIENTE</h1>
-        <div class="row mb-4">
-            <div class="col-md-9">
-                <input type="text" id="searchCliente" class="form-control" required>
-            </div>
-            <div class="col-md-3">
-                <button type="button" class="btn btn-primary w-200" onclick="searchName()">Buscar</button>
-            </div>
-        </div>
         <!-- FORMULARIO -->
         <form id="formCliente" class="row g-3">
+            <div class="row mb-4">
+                <div class="col-md-9">
+                    <input type="text" id="searchCliente" class="form-control" placeholder="Buscar Cliente" required>
+                </div>
+                <div class="col-md-3">
+                    <button type="button" class="btn btn-primary w-200" onclick="searchName()">Buscar</button>
+                </div>
+            </div>
             <!-- NOME -->
             <div class="col-md-5">
                 <label for="nome" class="form-label">Nome:</label>
@@ -42,11 +41,15 @@
                 </select>
             </div>
             <!-- CPF -->
-            <div class="col-md-6">
+            <div class="col-md-5">
                 <label for="cpf" class="form-label">CPF:</label>
                 <input type="text" id="inputCpf" class="form-control" required onblur="validarCPF()">
                 <div id="cpfErro" class="text-danger mt-1" style="display: none;">CPF inválido</div>
                 <div id="cpfDuplo" class="text-danger mt-1" style="display: none;">CPF já cadastrado</div>
+                <br>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-warning w-200" onclick="buscarCPF()">BuscarCPF</button>
+                </div>
             </div>
             <!-- EMAIL -->
             <div class="col-md-6">

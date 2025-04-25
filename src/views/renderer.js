@@ -30,7 +30,6 @@ function validarCPF() {
     let cpfErro = document.getElementById('cpfErro')
     let cpf = cpfInput.value.replace(/\D/g, '')
 
-
     // Resetando mensagens e estilos
     cpfErro.style.display = "none"
     cpfInput.style.border = ""
@@ -179,6 +178,10 @@ let complemento = document.getElementById('inputComplemento')
 let bairro = document.getElementById('inputBairro')
 let cidade = document.getElementById('inputCidade')
 let uf = document.getElementById('inputUf')
+
+
+
+
 //= CRUD CREATE ===============================================
 formCli.addEventListener('submit', async (event) => {
     // evitar comportamento padrão de recarregar a página
@@ -214,9 +217,34 @@ formCli.addEventListener('submit', async (event) => {
     api.createCliente(newCliente)
 })
 
+// ===============================================================
+// == Manipulação do Enter =======================================
+function teclaEnter(event) {
+    if (event.key === "Enter") {
+        event.preventDefault() //ignorar o comportamento padrão
+        // executar o metodo de busca do cliente
+        searchName()
+    }
+}
+
+// "Escuta" do teclado ('keydown' = pressionar tecla)
+formCli.addEventListener('keydown', teclaEnter)
+
+// função para restaurar o padrão (tecla enter)
+function restaurarEnter() {
+    formCli.removeEventListener('keydown', teclaEnter)
+}
+
+
+// == Fim ========================================================
+// ===============================================================
+
+
+
+
 
 // =================================================================
-// == CRUD Rad =====================================================
+// == CRUD Read ====================================================
 
 // setar o nome do cliente para fazer um novo cadastro se a busca retornar que o cliente não está cadastrado.
 api.setName((args) => {
@@ -226,12 +254,15 @@ api.setName((args) => {
     // foco no campo de busca
     nome.focus()
     // limpar o campo de busca
-    foco.value =""
+    foco.value = ""
     // copiar o nome do cliente para o campo nome
     nome.value = busca
-}) 
+    // restaurar tecla enter
+    restaurarEnter()
+})
 
 function searchName() {
+
     //console.log("Teste do buscar feito")
     //capturar o nome a ser pesquisado (passo 1)
     let cliName = document.getElementById('searchCliente').value
@@ -266,6 +297,8 @@ function searchName() {
                 bairro.value = c.bairro
                 cidade.value = c.cidade
                 uf.value = c.uf
+                // restaurar a tecla enter
+                restaurarEnter()
             })
         })
     }
@@ -273,3 +306,46 @@ function searchName() {
 
 // == Fim CRUD Read ===================================================
 // =================================================================
+
+
+//= CRUD CREATE - Buscar Cpf ====================================================
+function buscarCPF() {
+    // Capturar o nome a ser pesquisado (Passo 1)
+    let cliCpf = document.getElementById('inputCpf').value
+    console.log(cliCpf) // teste passo 1
+    // Validação do campo obrigatorio
+    // SE o campo de buscar não for preenchido
+    if (cliCpf == "") {
+        // Enviar ao main um pedido para alertar o usuario
+        // Precisa usar o preload.js
+        api.validateCpf()
+    } else {
+        // Enviar o nome do cliente ao main (Passo 2)
+        api.buscarCpf(cliCpf)
+        // Receber os dados do cliente (Passo 5)
+        api.renderClient((event, client) => {
+            // Teste de recebimento dos dados do cliente
+            console.log(client)
+            // Passo 6 - renderização dos dados do cliente, preencher os inputs do form
+            const clientData = JSON.parse(client)
+            arrayClient = clientData
+            // uso do ForEach para percorrer o vetor e extrair os dados
+            arrayClient.forEach((c) => {
+                nome.value = c.nome
+                sexo.value = c.sexo
+                cpf.value = c.cpf
+                email.value = c.email
+                tel.value = c.telefone
+                cep.value = c.cep
+                logradouro.value = c.logradouro
+                numero.value = c.numero
+                complemento.value = c.complemento
+                bairro.value = c.bairro
+                cidade.value = c.cidade
+                uf.value = c.uf
+            })
+        })
+    }
+}
+//= FIM CREATE ===============================================================
+//============================================================================
