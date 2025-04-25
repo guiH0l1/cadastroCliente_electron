@@ -390,7 +390,7 @@ ipcMain.on('search-cpf', async (event, cliCpf) => {
         // se o botão sim for pressionado
         if(result.response === 0){
           // Enviar ao pedido para renderer um pedido para recortar e copiar o nome do cliente
-          event.reply('set-name')
+          event.reply('')
         }else{
         // Enviar ao renderer um pedido para limpar o campo
         event.reply('reset-form')

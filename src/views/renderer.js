@@ -262,90 +262,44 @@ api.setName((args) => {
 })
 
 function searchName() {
+    let input = document.getElementById('searchCliente').value.trim()
+    console.log(input)
 
-    //console.log("Teste do buscar feito")
-    //capturar o nome a ser pesquisado (passo 1)
-    let cliName = document.getElementById('searchCliente').value
-    console.log(cliName) // teste do passo 1
-    // validação de campo obrigatorio
-    // se o campo de busca não for preenchido
-    if (cliName === "") {
-        // enviar ao main um pedido para alerta o usuario
-        // precisa usar o preload.js
+    if (input === "") {
         api.validateSearch()
-    } else {
-        // enviar onome do cliente ao main(passo 2)
-        api.searchName(cliName)
-        // receber os dados do cliente(passo 5)
-        api.renderClient((event, client) => {
-            // teste de recebimento dos dados do cliente
-            console.log(client)
-            // passo 6 renderização dos dados do cliente (preencher os inputs do form) Não esquecer os dados de string para JSON 
-            const clientData = JSON.parse(client)
-            arrayClient = clientData
-            // uso do forEach para percorrer o vetor e extrair os dados
-            arrayClient.forEach((c) => {
-                nome.value = c.nome
-                sexo.value = c.sexo
-                cpf.value = c.cpf
-                email.value = c.email
-                tel.value = c.telefone
-                cep.value = c.cep
-                logradouro.value = c.logradouro
-                numero.value = c.numero
-                complemento.value = c.complemento
-                bairro.value = c.bairro
-                cidade.value = c.cidade
-                uf.value = c.uf
-                // restaurar a tecla enter
-                restaurarEnter()
-            })
-        })
+        return
     }
-}
 
-// == Fim CRUD Read ===================================================
-// =================================================================
+    // Verifica se é CPF (somente números e 11 dígitos)
+    let isCpf = /^\d{11}$/.test(input.replace(/\D/g, ''))
 
-
-//= CRUD CREATE - Buscar Cpf ====================================================
-function buscarCPF() {
-    // Capturar o nome a ser pesquisado (Passo 1)
-    let cliCpf = document.getElementById('inputCpf').value
-    console.log(cliCpf) // teste passo 1
-    // Validação do campo obrigatorio
-    // SE o campo de buscar não for preenchido
-    if (cliCpf == "") {
-        // Enviar ao main um pedido para alertar o usuario
-        // Precisa usar o preload.js
-        api.validateCpf()
+    if (isCpf) {
+        // Buscar por CPF
+        api.buscarCpf(input)
     } else {
-        // Enviar o nome do cliente ao main (Passo 2)
-        api.buscarCpf(cliCpf)
-        // Receber os dados do cliente (Passo 5)
-        api.renderClient((event, client) => {
-            // Teste de recebimento dos dados do cliente
-            console.log(client)
-            // Passo 6 - renderização dos dados do cliente, preencher os inputs do form
-            const clientData = JSON.parse(client)
-            arrayClient = clientData
-            // uso do ForEach para percorrer o vetor e extrair os dados
-            arrayClient.forEach((c) => {
-                nome.value = c.nome
-                sexo.value = c.sexo
-                cpf.value = c.cpf
-                email.value = c.email
-                tel.value = c.telefone
-                cep.value = c.cep
-                logradouro.value = c.logradouro
-                numero.value = c.numero
-                complemento.value = c.complemento
-                bairro.value = c.bairro
-                cidade.value = c.cidade
-                uf.value = c.uf
-            })
-        })
+        // Buscar por nome
+        api.searchName(input)
     }
+
+    api.renderClient((event, client) => {
+        const clientData = JSON.parse(client)
+        arrayClient = clientData
+
+        arrayClient.forEach((c) => {
+            nome.value = c.nome
+            sexo.value = c.sexo
+            cpf.value = c.cpf
+            email.value = c.email
+            tel.value = c.telefone
+            cep.value = c.cep
+            logradouro.value = c.logradouro
+            numero.value = c.numero
+            complemento.value = c.complemento
+            bairro.value = c.bairro
+            cidade.value = c.cidade
+            uf.value = c.uf
+        })
+
+        restaurarEnter()
+    })
 }
-//= FIM CREATE ===============================================================
-//============================================================================
