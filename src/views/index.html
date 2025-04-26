@@ -18,7 +18,7 @@
         <form id="formCliente" class="row g-3">
             <div class="row mb-4">
                 <div class="col-md-9">
-                    <input type="text" id="searchCliente" class="form-control" placeholder="Buscar Cliente" required>
+                    <input type="text" id="searchCliente" class="form-control" placeholder="Buscar Cliente" spellcheck="false" required>
                 </div>
                 <div class="col-md-3">
                     <button type="button" class="btn btn-primary w-200" onclick="searchName()">Buscar</button>
@@ -27,7 +27,7 @@
             <!-- NOME -->
             <div class="col-md-5">
                 <label for="nome" class="form-label">Nome:</label>
-                <input type="text" id="inputNome" class="form-control" required>
+                <input type="text" id="inputNome" class="form-control" spellcheck="false" required>
             </div>
             <!-- SEXO -->
             <div class="col-md-4">
@@ -47,9 +47,6 @@
                 <div id="cpfErro" class="text-danger mt-1" style="display: none;">CPF inválido</div>
                 <div id="cpfDuplo" class="text-danger mt-1" style="display: none;">CPF já cadastrado</div>
                 <br>
-                <div class="col-md-2">
-                    <button type="button" class="btn btn-warning w-200" onclick="buscarCPF()">BuscarCPF</button>
-                </div>
             </div>
             <!-- EMAIL -->
             <div class="col-md-6">
