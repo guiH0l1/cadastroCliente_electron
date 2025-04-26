@@ -16,6 +16,9 @@ function limparFormulario() {
     document.getElementById("formCliente").reset()
     document.getElementById("cpfErro").style.display = "none"
     document.getElementById("mensagemSucesso").style.display = "none"
+
+    
+
 }
 
 // processo de cadastro do cliente //
@@ -159,8 +162,10 @@ api.dbStatus((event, message) => {
 //=============================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
+    // desativar os botoes editar e excluir
     btnUpdate.disabled = true
     btnDelete.disabled = true
+    btnCreate.disabled = false
     foco.focus()
 })
 //=============================================================================
@@ -261,6 +266,18 @@ api.setName((args) => {
     restaurarEnter()
 })
 
+
+api.setCpf((args) => {
+    console.log("teste do IPC 'set-cpf'")
+    let buscaCpf = document.getElementById('searchCliente').value
+    nome.focus()
+    foco.value = ""
+    cpf.value = buscaCpf
+    restaurarEnter()
+})
+
+
+
 function searchName() {
     let input = document.getElementById('searchCliente').value.trim()
     console.log(input)
@@ -298,8 +315,13 @@ function searchName() {
             bairro.value = c.bairro
             cidade.value = c.cidade
             uf.value = c.uf
+            restaurarEnter()
+            //desativar o botão adicionar
+            btnCreate.disabled = true
+            // ativar e desativar o botão editar e excluir
+            btnUpdate.disabled = false
+            btnDelete.disabled = false
         })
 
-        restaurarEnter()
     })
 }
